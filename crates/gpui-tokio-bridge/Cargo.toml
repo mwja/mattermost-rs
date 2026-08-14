@@ -1,0 +1,11 @@
+[package]
+name = "gpui-tokio-bridge"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+gpui.workspace = true
+tokio.workspace = true
+
+[lints]
+workspace = true

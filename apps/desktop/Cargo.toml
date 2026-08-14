@@ -1,0 +1,23 @@
+
+[package]
+name = "mattermost-desktop"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+directories.workspace = true
+gpui.workspace = true
+gpui_platform.workspace = true
+gpui-component.workspace = true
+gpui-component-assets.workspace = true
+gpui-tokio-bridge.workspace = true
+keyring.workspace = true
+log.workspace = true
+mattermost.workspace = true
+serde_json.workspace = true
+simple_logger.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true
