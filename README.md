@@ -83,6 +83,8 @@ should add functionality and every minor will be a breaking change for the SDK.
 Post 1.0.0, I will likely track the SDK and the app on two different versions,
 and will follow regular semver.
 
+Versions will likely just be managed/tagged with `cargo-tag`.
+
 
 ## Full Disclosure
 
