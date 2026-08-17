@@ -77,7 +77,7 @@ pub struct ChannelCategory {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ChannelCategoryResult {
+struct ChannelCategoryResult {
     pub categories: Vec<ChannelCategory>,
     /// We can kind of ignore this as sort_order is present on the [ChannelCategory].
     pub order: Vec<String>,
