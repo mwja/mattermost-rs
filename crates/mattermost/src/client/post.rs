@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use thiserror::Error;
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Post {
@@ -23,9 +24,7 @@ pub struct Post {
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
-pub struct PostMetadata {
-    embeds:
-}
+pub struct PostMetadata {}
 
 #[derive(Debug, Default)]
 pub struct GetPostsOptions {
@@ -65,6 +64,18 @@ impl Default for PostsCursor {
     }
 }
 
+#[derive(Debug, Error)]
+pub enum PostLoadError {
+    #[error("failed to load posts: {0}")]
+    RequestError(#[from] reqwest::Error),
+    #[error("failed to parse posts: {0}")]
+    ParseError(#[from] serde_json::Error),
+    #[error("failed to load posts: {0}")]
+    ResponseError(reqwest::StatusCode),
+}
 pub trait PostsClient {
-    fn get_posts(&self, options: GetPostsOptions) -> impl Future<Output = Result<Vec<Post>>>;
+    fn get_posts(
+        &self,
+        options: GetPostsOptions,
+    ) -> impl Future<Output = Result<Vec<Post>, PostLoadError>>;
 }
