@@ -6,25 +6,21 @@ use gpui_component::{
     h_flex,
     hover_card::HoverCard,
     label::Label,
+    list::ListItem,
     v_flex,
 };
 
 use crate::ui::channel::icon::channel_type_to_icon;
 
 #[derive(IntoElement, Clone)]
-pub struct Channel {
+pub struct ChannelRow {
     pub id: String,
     pub name: String,
     pub selected: bool,
     pub channel_type: mattermost::client::channel::ChannelType,
 }
 
-impl Channel {
-    pub fn selected(mut self, selected: bool) -> Self {
-        self.selected = selected;
-        self
-    }
-
+impl ChannelRow {
     pub fn new(id: &str) -> Self {
         Self {
             id: id.to_string(),
@@ -45,32 +41,19 @@ impl Channel {
     }
 }
 
-impl RenderOnce for Channel {
+impl RenderOnce for ChannelRow {
     fn render(self, _window: &mut gpui::Window, _cx: &mut gpui::App) -> impl IntoElement {
         HoverCard::new(self.id.clone())
             .trigger(
-                Button::new(self.id.clone())
-                    .text_align(gpui::TextAlign::Left)
-                    .px_4()
+                h_flex()
+                    .items_center()
+                    .gap_2()
+                    .child(channel_type_to_icon(self.channel_type.clone()))
                     .child(
-                        div()
-                            .w_full()
-                            .flex()
-                            .overflow_hidden()
-                            .justify_start()
-                            .items_center()
-                            .child(
-                                div()
-                                    .text_ellipsis()
-                                    .whitespace_nowrap()
-                                    .child(self.name.clone()),
-                            ),
-                    )
-                    .icon(Icon::new(
-                        Icon::new(channel_type_to_icon(self.channel_type.clone())).small(),
-                    ))
-                    .ghost()
-                    .selected(self.selected),
+                        Label::new(self.name.clone())
+                            .text_ellipsis()
+                            .whitespace_nowrap(),
+                    ),
             )
             .child(
                 DescriptionList::new()
@@ -92,15 +75,5 @@ impl RenderOnce for Channel {
                     .columns(1)
                     .layout(gpui::Axis::Vertical),
             )
-    }
-}
-
-impl Selectable for Channel {
-    fn selected(mut self, selected: bool) -> Self {
-        self.selected = selected;
-        self
-    }
-    fn is_selected(&self) -> bool {
-        self.selected
     }
 }

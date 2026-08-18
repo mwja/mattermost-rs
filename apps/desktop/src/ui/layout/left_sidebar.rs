@@ -1,39 +1,25 @@
-use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, div};
+use gpui::{AnyElement, App, IntoElement, ParentElement, RenderOnce, Styled, Window, div};
 use gpui_component::ActiveTheme;
-use mattermost::client::channel::ChannelType;
 
-use crate::ui::channel::ChannelList;
-
-#[derive(Debug, Clone)]
+#[derive(Default, IntoElement)]
 pub struct LeftSidebar {
-    channel_list: Entity<ChannelList>,
+    items: Vec<AnyElement>,
 }
 
 impl LeftSidebar {
-    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let channel_list = cx.new(|cx| {
-            ChannelList::new(
-                window,
-                cx,
-                [
-                    ChannelType::Open,
-                    ChannelType::Private,
-                    ChannelType::Direct,
-                    ChannelType::Group,
-                ],
-            )
-        });
-
-        Self { channel_list }
+    pub fn new() -> Self {
+        Self { items: Vec::new() }
     }
 }
 
-impl Render for LeftSidebar {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        div()
-            .flex_1()
-            .bg(cx.theme().secondary)
-            .child(self.channel_list.clone())
-            .into_any_element()
+impl ParentElement for LeftSidebar {
+    fn extend(&mut self, elements: impl IntoIterator<Item = AnyElement>) {
+        self.items.extend(elements);
+    }
+}
+
+impl RenderOnce for LeftSidebar {
+    fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
+        div().flex_1().bg(cx.theme().secondary).children(self.items)
     }
 }

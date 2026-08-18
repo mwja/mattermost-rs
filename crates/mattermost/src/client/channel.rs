@@ -47,6 +47,15 @@ pub struct Channel {
     pub default_category_name: String,
 }
 
+impl PartialEq for Channel {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+// Our PartialEq is reflexive
+impl Eq for Channel {}
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum ChannelCategoryType {
     #[serde(rename = "direct_messages")]
@@ -60,7 +69,7 @@ pub enum ChannelCategoryType {
     Channels,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct ChannelCategory {
     pub id: String,
     pub user_id: String,
@@ -75,8 +84,15 @@ pub struct ChannelCategory {
     pub channel_ids: Vec<String>,
 }
 
+impl PartialEq for ChannelCategory {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+impl Eq for ChannelCategory {}
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
 struct ChannelCategoryResult {
     pub categories: Vec<ChannelCategory>,
     /// We can kind of ignore this as sort_order is present on the [ChannelCategory].

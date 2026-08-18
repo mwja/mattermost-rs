@@ -9,7 +9,7 @@
 //! expect this API to change between patch versions until 0.1.0.
 mod resources;
 
-pub use resources::{AllChannelCategories, AllChannels, AllTeams};
+pub use resources::{AllChannelCategories, AllChannels, AllTeams, ChannelPosts, UserById};
 
 use std::{
     any::Any,

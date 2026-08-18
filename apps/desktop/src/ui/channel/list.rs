@@ -1,4 +1,7 @@
-use gpui::{AppContext, Context, Entity, IntoElement, ParentElement, Render, Styled, Window, div};
+use gpui::{
+    AppContext, Context, Entity, EventEmitter, IntoElement, ParentElement, Render, Styled, Window,
+    div,
+};
 use gpui_component::list::{List, ListState};
 use mattermost::{
     client::channel::ChannelType,
@@ -7,9 +10,15 @@ use mattermost::{
 
 use crate::{store::AsyncAppContextStoreExt, ui::channel::list_delegate::ChannelListDelegate};
 
+pub enum ChannelListEvent {
+    ChannelSelected(String),
+}
+
 pub struct ChannelList {
     list_state: Entity<ListState<ChannelListDelegate>>,
 }
+
+impl EventEmitter<ChannelListEvent> for ChannelList {}
 
 impl ChannelList {
     pub fn new(
@@ -17,10 +26,24 @@ impl ChannelList {
         cx: &mut Context<Self>,
         channel_types: impl Into<Vec<ChannelType>>,
     ) -> Self {
+        use gpui_component::list::ListEvent;
+
         let list_state = cx.new(|cx| {
             ListState::new(ChannelListDelegate::new(channel_types.into()), window, cx)
                 .searchable(true)
         });
+
+        cx.subscribe(&list_state, |this, list_state, event, cx| match event {
+            ListEvent::Confirm(ix) => {
+                let Some(channel) = list_state.read(cx).delegate().channel_at(*ix) else {
+                    return;
+                };
+
+                cx.emit(ChannelListEvent::ChannelSelected(channel.id.clone()));
+            }
+            _ => {}
+        })
+        .detach();
 
         cx.spawn({
             let list_state = list_state.clone();

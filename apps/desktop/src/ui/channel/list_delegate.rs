@@ -4,12 +4,12 @@ use gpui::{
 use gpui_component::{
     ActiveTheme, IndexPath,
     label::Label,
-    list::{ListDelegate, ListState},
+    list::{ListDelegate, ListItem, ListState},
     v_flex,
 };
 use mattermost::client::{self, channel::ChannelType};
 
-use crate::ui::channel::channel::Channel;
+use crate::ui::channel::row::ChannelRow;
 
 pub struct ChannelListDelegate {
     channels: Vec<client::channel::Channel>,
@@ -86,10 +86,16 @@ impl ChannelListDelegate {
             (cat, channels)
         })
     }
+
+    pub fn channel_at(&self, ix: IndexPath) -> Option<&client::channel::Channel> {
+        self.ordered_categories_with_channels()
+            .nth(ix.section)
+            .and_then(|(_, channels)| channels.into_iter().nth(ix.row))
+    }
 }
 
 impl ListDelegate for ChannelListDelegate {
-    type Item = Channel;
+    type Item = ListItem;
 
     fn loading(&self, _cx: &App) -> bool {
         self.loading
@@ -167,10 +173,13 @@ impl ListDelegate for ChannelListDelegate {
             .nth(ix.section)
             .and_then(|(_, channels)| channels.into_iter().nth(ix.row))
             .map(|item| {
-                Channel::new(&item.id)
-                    .name(&item.display_name)
+                ListItem::new(item.id.clone())
+                    .child(
+                        ChannelRow::new(&item.id)
+                            .name(&item.display_name)
+                            .channel_type(item.channel_type.clone()),
+                    )
                     .selected(Some(ix) == self.selected_index)
-                    .channel_type(item.channel_type.clone())
             })
     }
 

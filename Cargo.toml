@@ -35,6 +35,7 @@ serde_json = "1.0.151"
 simple_logger = "5.2.0"
 thiserror = "2.0.20"
 tokio = { version = "1.53.1", features = ["full"] }
+url = "2.5.8"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
