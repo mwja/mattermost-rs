@@ -2465,7 +2465,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-tokio-bridge"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "gpui",
  "tokio",
@@ -3749,7 +3749,7 @@ dependencies = [
 
 [[package]]
 name = "mattermost"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "log",
  "reqwest",
@@ -3763,7 +3763,7 @@ dependencies = [
 
 [[package]]
 name = "mattermost-desktop"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "anyhow",
  "directories",
